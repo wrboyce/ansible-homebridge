@@ -1,0 +1,13 @@
+---
+homebridge_plugins: []
+
+homebridge_name: Homebridge
+homebridge_username: CC:22:3D:E3:CE:30
+homebridge_port: 51826
+homebridge_pin: 031-45-154
+
+homebridge_description: ""
+
+homebridge_accessories: []
+
+homebridge_platforms: []

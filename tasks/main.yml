@@ -1,0 +1,60 @@
+---
+- name: add nodesource apt signing key
+  apt_key: url=https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+  tags: [homebridge, install]
+
+- name: add nodesource apt repository
+  apt_repository: repo="deb http://deb.nodesource.com/node_4.x {{ ansible_distribution_release }} stable main"
+  tags: [homebridge, install]
+
+- name: install prerequisites
+  apt: name="{{ item }}" state=latest
+  with_items:
+    - build-essential
+    - libavahi-compat-libdnssd-dev
+    - nodejs
+  tags: [homebridge, install]
+
+- name: install homebridge
+  npm: name=homebridge global=yes state=latest
+  notify: reload homebridge
+  register: install_homebridge
+  tags: [homebridge, install]
+
+- name: build hap-nodejs mdns requirement manually because it is broken
+  command: chdir=/usr/lib/node_modules/homebridge/node_modules/hap-nodejs/node_modules/mdns
+           /usr/lib/node_modules/npm/bin/node-gyp-bin/node-gyp BUILDTYPE=Release rebuild
+  when: install_homebridge.changed
+  tags: [homebridge, install]
+
+- name: install homebridge plugins
+  npm: name="homebridge-{{ item }}" global=yes state=latest
+  with_items:
+  - "{{ homebridge_plugins }}"
+  notify: reload homebridge
+  tags: [homebridge, install]
+
+- name: create homebridge user
+  user: name=homebridge comment=Homebridge system=yes
+  tags: [homebridge, install]
+
+- name: create config directory
+  file: path=~homebridge/.homebridge state=directory owner=homebridge group=homebridge
+  notify: reload homebridge
+  tags: [homebridge, config]
+
+- name: generate config file
+  template: src=config.json.j2 dest=~homebridge/.homebridge/config.json owner=homebridge group=homebridge
+  notify: reload homebridge
+  tags: [homebridge, config]
+
+- name: install service
+  copy: src=homebridge.service dest=/lib/systemd/system/ owner=root group=root mode=0644
+  notify: reload homebridge
+  register: service
+  tags: [homebridge, install]
+
+- name: activate service
+  service: name=homebridge enabled=yes
+  when: service.changed
+  tags: [homebridge, install]

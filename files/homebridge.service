@@ -1,0 +1,12 @@
+[Unit]
+Description=Homebridge
+
+[Service]
+Type=simple
+ExecStart=/usr/lib/node_modules/homebridge/bin/homebridge
+User=homebridge
+Group=homebridge
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

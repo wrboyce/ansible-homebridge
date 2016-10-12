@@ -1,0 +1,15 @@
+galaxy_info:
+  author: Will Boyce
+  description: Install and configure Homebridge
+  license: Apache2
+  min_ansible_version: 1.2
+  platforms:
+  - name: Ubuntu
+    versions:
+    - all
+  - name: Debian
+    versions:
+    - all
+  galaxy_tags: [homebridge, homekit]
+
+dependencies: []

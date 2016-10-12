@@ -1,0 +1,14 @@
+{
+    "bridge": {
+        "name": "{{ homebridge_name }}",
+        "username": "{{ homebridge_username }}",
+        "port": {{ homebridge_port }},
+        "pin": "{{ homebridge_pin }}"
+    },
+
+    "description": "{{ homebridge_description }}",
+
+    "accessories": {{ homebridge_accessories|to_nice_json }},
+
+    "platforms": {{ homebridge_platforms|to_nice_json }}
+}

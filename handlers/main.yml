@@ -1,0 +1,3 @@
+---
+- name: reload homebridge
+  service: name=homebridge enabled=yes state=reloaded
